@@ -1,0 +1,111 @@
+.register-main {
+  background: white;
+  padding: 60px 0;
+  display: flex;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 650px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 15px;
+}
+
+.title-separator {
+  width: 40px;
+  height: 3px;
+  background-color: #000;
+  margin-bottom: 40px;
+}
+
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333;
+}
+
+.form-input::placeholder {
+  color: #888;
+  font-weight: 700;
+}
+
+.form-input:focus {
+  outline: none;
+  background-color: #e4e4e4;
+}
+
+.gender-selection {
+  display: flex;
+  gap: 40px;
+  padding: 5px 0;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #000;
+}
+
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #000;
+}
+
+.register-submit-btn {
+  padding: 16px 40px;
+  background-color: #237b67;
+  color: white;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  align-self: center;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.register-submit-btn:hover {
+  background-color: #1c6252;
+}
+
+.back-home-btn {
+  background: none;
+  border: none;
+  color: #237b67;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  align-self: center;
+}
+
+.back-home-btn:hover {
+  text-decoration: underline;
+}
