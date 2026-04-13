@@ -1,11 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { hotDealProducts, freshMeatProducts, fruitProducts, processedFoodProducts, seafoodProducts, cookedFoodProducts, dryFoodProducts } from './data/products';
 import bannerFruits from './assets/banner_fruits.png';
 import bannerMeat from './assets/banner_meat.png';
 import bannerSeafood from './assets/banner_seafood.png';
 
 export default function Home() {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [allProducts, setAllProducts] = useState({});
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        const grouped = data.reduce((acc, curr) => {
+          acc[curr.categoryId] = acc[curr.categoryId] || [];
+          acc[curr.categoryId].push(curr);
+          return acc;
+        }, {});
+        setAllProducts(grouped);
+      })
+      .catch(err => console.error("API load products error:", err));
+  }, []);
+
+  const hotDealProducts = allProducts['hot-deal'] ? allProducts['hot-deal'].slice(0, 10) : [];
+  const freshMeatProducts = allProducts['fresh-meat'] ? allProducts['fresh-meat'].slice(0, 10) : [];
+  const fruitProducts = allProducts['fruits'] ? allProducts['fruits'].slice(0, 10) : [];
+  const processedFoodProducts = allProducts['processed'] ? allProducts['processed'].slice(0, 10) : [];
+  const seafoodProducts = allProducts['seafood'] ? allProducts['seafood'].slice(0, 10) : [];
+  const cookedFoodProducts = allProducts['homemade'] ? allProducts['homemade'].slice(0, 10) : [];
+  const dryFoodProducts = allProducts['dry-food'] ? allProducts['dry-food'].slice(0, 10) : [];
 
   const banners = [bannerFruits, bannerMeat, bannerSeafood];
 
@@ -45,21 +67,21 @@ export default function Home() {
   ];
 
   return (
-      <main>
+    <main>
       {/* Hero Banner */}
       <section className="hero-banner">
         {banners.map((banner, index) => (
-          <img 
+          <img
             key={index}
-            src={banner} 
-            alt={`Khuyến mãi ${index + 1}`} 
+            src={banner}
+            alt={`Khuyến mãi ${index + 1}`}
             className={`slide ${index === currentBannerIndex ? 'active' : ''}`}
           />
         ))}
         <div className="banner-indicators">
           {banners.map((_, index) => (
-            <span 
-              key={index} 
+            <span
+              key={index}
               className={`indicator ${index === currentBannerIndex ? 'active' : ''}`}
               onClick={() => setCurrentBannerIndex(index)}
             ></span>
@@ -122,7 +144,7 @@ export default function Home() {
       {/* Promo CTA Button */}
       <div className="promo-cta">
         <a href="#" className="promo-cta-btn">
-          Xem thêm sản phẩm <strong>chương trình khuyến mãi</strong>
+          Xem thêm sản phẩm <strong>Chương trình khuyến mãi</strong>
         </a>
       </div>
 
@@ -319,6 +341,6 @@ export default function Home() {
         </div>
       </section>
 
-      </main>
+    </main>
   );
 }
