@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import logo3sach from '../assets/logo.png';
+import { API_BASE_URL } from '../utils/api';
 
-export default function Header({ setActivePage, activePage, categories = [], currentUser, setCurrentUser }) {
+export default function Header({ setActivePage, activePage, categories = [], currentUser, setCurrentUser, setSearchKeyword }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
+  const [tempSearch, setTempSearch] = useState('');
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -22,22 +24,29 @@ export default function Header({ setActivePage, activePage, categories = [], cur
     return () => document.removeEventListener('click', handleClickOutside);
   }, [menuOpen, accountOpen]);
 
+  const handleGoogleLogin = () => {
+    const redirectUrl = encodeURIComponent(window.location.origin);
+    window.location.href = `${API_BASE_URL}/api/auth/google?redirect=${redirectUrl}`;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!loginEmail || !loginPassword) {
-      alert("Vui lòng nhập đầy đủ Email và Mật khẩu!");
+      alert('Vui lòng nhập đầy đủ Email và Mật khẩu!');
       return;
     }
+
     setLoginLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword })
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
       const data = await res.json();
+
       if (!res.ok) {
-        alert(data.message || "Đăng nhập thất bại");
+        alert(data.message || 'Đăng nhập thất bại');
       } else {
         localStorage.setItem('freshstore_token', data.token);
         localStorage.setItem('freshstore_user', JSON.stringify(data.user));
@@ -45,11 +54,11 @@ export default function Header({ setActivePage, activePage, categories = [], cur
         setAccountOpen(false);
         setLoginEmail('');
         setLoginPassword('');
-        alert("Đăng nhập thành công!");
+        alert('Đăng nhập thành công!');
       }
     } catch (err) {
-      alert("Lỗi máy chủ! Vui lòng thử lại sau.");
-      console.error("Login Error: ", err);
+      alert('Lỗi máy chủ! Vui lòng thử lại sau.');
+      console.error('Login Error: ', err);
     } finally {
       setLoginLoading(false);
     }
@@ -60,6 +69,23 @@ export default function Header({ setActivePage, activePage, categories = [], cur
     localStorage.removeItem('freshstore_user');
     setCurrentUser(null);
     setAccountOpen(false);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const keyword = tempSearch.trim();
+
+    // Không tìm kiếm khi input rỗng để tránh trả về toàn bộ sản phẩm
+    if (!keyword) {
+      setSearchKeyword('');
+      if (activePage === 'search') {
+        setActivePage('home');
+      }
+      return;
+    }
+
+    setSearchKeyword(keyword);
+    setActivePage('search');
   };
 
   return (
@@ -119,8 +145,13 @@ export default function Header({ setActivePage, activePage, categories = [], cur
           </div>
 
           {/* Search Bar */}
-          <form className="search-bar" action="/search" method="GET">
-            <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." />
+          <form className="search-bar" onSubmit={handleSearchSubmit}>
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm sản phẩm..." 
+              value={tempSearch}
+              onChange={(e) => setTempSearch(e.target.value)}
+            />
             <button type="submit" aria-label="Tìm kiếm">
               <i className="bi bi-search"></i>
             </button>
@@ -153,25 +184,32 @@ export default function Header({ setActivePage, activePage, categories = [], cur
                 ) : (
                   <div className="login-form">
                     <h3 className="login-title">ĐĂNG NHẬP TÀI KHOẢN</h3>
-                    <p className="login-subtitle">Nhập email và mật khẩu của bạn:</p>
+                    <p className="login-subtitle">Nhập email và mật khẩu của bạn hoặc đăng nhập bằng Google.</p>
 
                     <div className="social-login">
-                      <button className="social-btn google-btn">
-                        <i className="bi bi-google"></i> Đăng nhập Google
-                      </button>
-                      <button className="social-btn facebook-btn">
-                        <i className="bi bi-facebook"></i> Đăng nhập<br />Facebook
+                      <button className="social-btn google-btn" onClick={handleGoogleLogin}>
+                        <i className="bi bi-google"></i> Đăng nhập bằng Google
                       </button>
                     </div>
 
                     <form className="login-inputs" onSubmit={handleLogin}>
                       <div className="form-group">
-                        <input type="email" placeholder="Email" required 
-                          value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+                        <input
+                          type="email"
+                          placeholder="Email"
+                          required
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                        />
                       </div>
                       <div className="form-group">
-                        <input type="password" placeholder="Mật khẩu" required 
-                          value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
+                        <input
+                          type="password"
+                          placeholder="Mật khẩu"
+                          required
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                        />
                       </div>
 
                       <button type="submit" className="login-submit-btn" disabled={loginLoading}>

@@ -13,7 +13,8 @@ const productSchema = new mongoose.Schema({
   categoryId: { // Khoá liên kết với Category.id bên trên
     type: String,
     required: true
-  }
+  },
+  priceNumeric: Number
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

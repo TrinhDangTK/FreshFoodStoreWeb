@@ -102,55 +102,11 @@
 }
 
 /* Product Card overrides for Hot Deal page */
-.hotdeal-main .product-image {
-  position: relative;
-  background: #f7f7f7;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hotdeal-main .product-image img {
-  width: 100%;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-}
-
-.image-overlay-logo {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 38px;
-  height: 38px;
-  background: white;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  padding: 4px;
-}
-
-.image-overlay-logo img {
-  width: 100%;
-  height: auto;
-}
-
-/* Override the standard badge specifically for HotDeal */
-span.discount-solid {
-  background: #ff0000 !important;
-  border-radius: 2px !important;
-  padding: 3px 8px !important;
-  font-size: 14px !important;
-  top: 5px !important;
-  left: 5px !important;
-  box-shadow: none !important;
-}
-
-.hotdeal-main .btn-buy i.bi-handbag {
-  font-weight: 800;
-  margin-right: 4px;
+.category-products {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
 }
 
 .promo-nav-item {
@@ -226,4 +182,56 @@ span.discount-solid {
 .aux-btn:hover {
   background-color: #f7f7f7 !important;
   color: var(--primary-green) !important;
+}
+
+/* Custom Category Styles */
+.category-header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.reset-filter-btn {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-wrap {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-wrap-right {
+  position: relative;
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 10;
+  width: 200px;
+  border-radius: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.filter-dropdown-menu.right-aligned {
+  left: auto;
+  right: 0;
+  width: 180px;
+}
+
+.filter-opt {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
 }

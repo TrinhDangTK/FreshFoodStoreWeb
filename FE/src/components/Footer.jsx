@@ -43,9 +43,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="footer-bottom">
-        <p>Copyright © 2026 TD Mart. Powered by Haravan</p>
-      </div>
     </footer>
   );
 }

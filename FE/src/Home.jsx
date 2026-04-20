@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import bannerFruits from './assets/banner_fruits.png';
 import bannerMeat from './assets/banner_meat.png';
 import bannerSeafood from './assets/banner_seafood.png';
+import { API_BASE_URL } from './utils/api';
+import ProductSection from './components/ProductSection';
+import ProductCard from './components/ProductCard';
 
 export default function Home() {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [allProducts, setAllProducts] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    setLoading(true);
+    fetch(`${API_BASE_URL}/api/products`)
       .then(res => res.json())
       .then(data => {
         const grouped = data.reduce((acc, curr) => {
@@ -17,8 +22,12 @@ export default function Home() {
           return acc;
         }, {});
         setAllProducts(grouped);
+        setLoading(false);
       })
-      .catch(err => console.error("API load products error:", err));
+      .catch(err => {
+        console.error("API load products error:", err);
+        setLoading(false);
+      });
   }, []);
 
   const hotDealProducts = allProducts['hot-deal'] ? allProducts['hot-deal'].slice(0, 10) : [];
@@ -116,27 +125,13 @@ export default function Home() {
             </h2>
           </div>
           <div className="hotdeal-products">
-            {hotDealProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <span className="discount-badge">-{product.discount}%</span>
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.salePrice}</span>
-                    <span className="original-price">{product.originalPrice}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
+            {loading ? (
+              <h2 style={{width: '100%', textAlign: 'center', margin: '40px 0', color: 'var(--primary-green)'}}>Đang tải sản phẩm nóng hổi...</h2>
+            ) : (
+              hotDealProducts.map((product, index) => (
+                <ProductCard key={index} product={product} showDiscount={true} />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -161,185 +156,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Thực Phẩm Tươi Sống Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>Thực Phẩm Tươi Sống</h2>
-          </div>
-          <div className="category-products">
-            {freshMeatProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Trái Cây & Hoa Tươi Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>Trái Cây & Hoa Tươi</h2>
-          </div>
-          <div className="category-products">
-            {fruitProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Thực Phẩm Sơ Chế Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>Thực Phẩm Sơ Chế</h2>
-          </div>
-          <div className="category-products">
-            {processedFoodProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Thịt & Hải Sản Cửa Hàng Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>Thịt Và Hải Sản Các Loại</h2>
-          </div>
-          <div className="category-products">
-            {seafoodProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Mặn & Chay Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>BBQ Tiệc, Ăn Liền Chay & Mặn</h2>
-          </div>
-          <div className="category-products">
-            {cookedFoodProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Thực Phẩm Khô Section */}
-      <section className="category-section">
-        <div className="category-inner">
-          <div className="category-title">
-            <h2>Thực Phẩm Khô</h2>
-          </div>
-          <div className="category-products">
-            {dryFoodProducts.map((product, index) => (
-              <div className="product-card" key={index}>
-                <div className="product-image">
-                  <div className="image-placeholder">
-                    <i className="bi bi-image"></i>
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-price">
-                    <span className="sale-price">{product.price}</span>
-                  </div>
-                  <button className="btn-buy">
-                    <i className="bi bi-cart-plus"></i>
-                    CHỌN MUA
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Category Sections using ProductSection component */}
+      <ProductSection title="Thực Phẩm Tươi Sống" products={freshMeatProducts} loading={loading} />
+      <ProductSection title="Trái Cây & Hoa Tươi" products={fruitProducts} loading={loading} />
+      <ProductSection title="Thực Phẩm Sơ Chế" products={processedFoodProducts} loading={loading} />
+      <ProductSection title="Thịt Và Hải Sản Các Loại" products={seafoodProducts} loading={loading} />
+      <ProductSection title="BBQ Tiệc, Ăn Liền Chay & Mặn" products={cookedFoodProducts} loading={loading} />
+      <ProductSection title="Thực Phẩm Khô" products={dryFoodProducts} loading={loading} />
 
     </main>
   );

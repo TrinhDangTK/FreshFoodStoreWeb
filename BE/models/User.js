@@ -12,7 +12,17 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Vui lòng nhập mật khẩu'],
+    required: false,
+  },
+  authProvider: {
+    type: String,
+    enum: ['local', 'google'],
+    default: 'local',
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   role: {
     type: String,
